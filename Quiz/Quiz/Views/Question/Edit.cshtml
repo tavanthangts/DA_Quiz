@@ -1,0 +1,82 @@
+﻿@using Quiz.Helper;
+@model Quiz.Models.QuestionViewModel;
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">@ViewBag.Title</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Starter</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+@using (Html.BeginForm("Create", "Question", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.QuestionId)
+    <div class="row">
+        <div class="card card-body">
+            <form action="">
+                <div class="row mb-3">
+                    <div class="col-lg-2 ">
+                        <label for="NameQuestion" class="form-label">Tên câu hỏi</label>
+                    </div>
+                    <div class="col-lg-5">
+                        @Html.TextBoxFor(x => x.NameQuestion, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 ">
+                        <label for="TypeQuestionId" class="form-label">Loại câu hỏi</label>
+                    </div>
+                    <div class="col-lg-5">
+                        @Html.DropDownListFor(x => x.TypeQuestionId, (List<SelectListItem>)ViewBag.LstTypeQuestion, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 ">
+                        <label for="SubjectId" class="form-label">Chủ đề</label>
+                    </div>
+                    <div class="col-lg-5">
+                        @Html.DropDownListFor(x => x.SubjectId, (List<SelectListItem>)ViewBag.LstSubject, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 ">
+                        <label for="Level" class="form-label">Cấp độ</label>
+                    </div>
+                    <div class="col-lg-5">
+                        @Html.DropDownListFor(x => x.Level, new SelectList(
+                        new List<Object>
+                        {
+                            new { value = 1 , text = "Dễ"  },
+                            new { value = 2 , text = "Trung bình" },
+                            new { value = 3 , text = "Khó" },
+                        },
+                        "value",
+                        "text"
+                        ))
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-7">
+                        <button type="submit" style="float : right" class="btn btn-primary">Lưu</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+

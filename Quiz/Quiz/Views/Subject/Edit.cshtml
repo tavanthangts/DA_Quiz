@@ -1,0 +1,85 @@
+﻿@model Quiz.Models.SubjectViewModel;
+@using Quiz.Helper;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">@ViewBag.Title</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Starter</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+@using (Html.BeginForm("Create", "Subject", FormMethod.Post))
+{
+    @Html.HiddenFor(x=>x.SubjectId)
+    <div class="row">
+        <div class="card card-body">
+            <form action="">
+
+                <div class="row mb-3">
+                    <div class="col-lg-2">
+                        <label for="ThemeType" class="form-label">Loại chủ đề</label>
+                    </div>
+                    <div class="row col-lg-5 ">
+                        <div class="col-sm-3">
+                            <input type="radio" id="OriginalTheme" name="ChooseTheme" value="@((int)ChooseTheme.OriginalTheme)" checked>
+                            <label for="OriginalTheme">Chủ đề gốc</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="radio" id="Childtheme" name="ChooseTheme" value="@((int)ChooseTheme.Childtheme)">
+                            <label for="Childtheme">Chủ đề con</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="parentsubject" style="display:none">
+                    <div class="row mb-3">
+                        <div class="col-lg-2">
+                            <label for="ParentSubjectID" class="form-label">Nhập ID chủ đề con</label>
+                        </div>
+                        <div class="col-lg-5">
+                            @Html.DropDownListFor(x=>x.ParentSubjectId, (List<SelectListItem>)ViewBag.LstSubject, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-2 ">
+                        <label for="NameSubject" class="form-label">Tên chủ đề</label>
+                    </div>
+                    <div class="col-lg-5">
+                        @Html.TextBoxFor(x => x.NameSubject, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-7">
+                        <button type="submit" style="float : right" class="btn btn-primary">Lưu</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<script lang="text/javascript">
+    $(document).ready(function () {
+        $("[name='ChooseTheme']").change(function () {
+            if (this.value == @((int)ChooseTheme.Childtheme)) {
+                $(".parentsubject").css("display", "block");
+            }
+            else {
+                $(".parentsubject").css("display", "none");
+            }
+        });
+    });
+</script>

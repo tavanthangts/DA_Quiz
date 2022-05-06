@@ -1,0 +1,89 @@
+﻿
+@model IEnumerable<Quiz.Models.SubjectViewModel>;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">@ViewBag.Title</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Pages</a></li>
+                    <li class="breadcrumb-item active">Starter</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="card card-body">
+        <div class="card-body">
+            <div id="customerList">
+                <div class="row g-4 mb-3">
+                    <div class="col-sm-auto">
+                        <div>
+                            <a href="@Url.Action("Create","Subject")" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Thêm mới </a>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="d-flex justify-content-sm-end">
+                            <div class="search-box ms-2">
+                                @Html.TextBox("SearchText", "", new { @class = "form-control search", @placeholder = "Search" })
+                                <i class="ri-search-line search-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive table-card mt-3 mb-1" id="lstSubject">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="myModaldelete" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                Bạn có muốn xóa dữ liệu này không
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Không</button>
+                <button type="button" class="btn btn-primary" onclick="DeleteSubject()">Có</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        GetListSubject();
+    })
+    function GetListSubject(page) {
+        var search = $("#SearchText").val();
+        $.ajax({
+            type: 'POST',
+            url: 'Subject/ListSubject',
+            data: {
+                search: search,
+                page: page
+            },
+            success: function (data) {
+                $('#lstSubject').html(data);
+
+            },
+        });
+    }
+    $("#SearchText").keyup(function () {
+        GetListSubject();
+    })
+</script>

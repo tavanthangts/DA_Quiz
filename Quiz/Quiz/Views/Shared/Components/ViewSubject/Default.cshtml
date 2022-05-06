@@ -1,0 +1,67 @@
+﻿@using Quiz.Helper;
+@model Quiz.Models.PageSubject;
+<table class="table align-middle table-nowrap" id="customerTable">
+    <thead class="table-light">
+        <tr>
+            <th class="sort" data-sort="customer_name">Tên chủ đề</th>
+            <th class="sort" data-sort="email">Chủ đề con</th>
+            <th class="sort" data-sort="action">Hoạt động</th>
+        </tr>
+    </thead>
+    <tbody class="list form-check-all">
+        @foreach (var item in Model.ListSubject)
+        {
+            <tr>
+                <td>@item.NameSubject</td>
+                <td>@item.ParentSubjectId</td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.SubjectId }) |
+                    <button data-bs-toggle="modal" data-bs-target="#myModaldelete" onclick="Delete('@item.SubjectId')">
+                        Xóa
+                    </button>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+<div class="d-flex justify-content-end">
+    <div class="pagination-wrap hstack gap-2" id="pagination">
+    </div>
+</div>
+<script>
+
+    function Delete(subjectId) {
+        $("#myModaldelete").attr("data-id", subjectId)
+    }
+
+    $(document).ready(function () {
+        Pagination();
+
+    })
+    function DeleteSubject() {
+        let id = $("#myModaldelete").attr("data-id");
+        $.ajax({
+            type: 'POST',
+            url: 'Subject/Delete',
+            data: {
+                id: id,
+            },
+            success: function (data) {
+                $("#myModaldelete").modal("hide");
+                GetListSubject(@Model.PageIndex);
+            },
+        });
+    }
+
+    function Pagination() {
+            $('#pagination').html('@Html.Raw(Helper.Paging(Model.PageIndex, Model.NumberPage))');
+    }
+    function NextPage(page) {
+        GetListSubject(page);
+    }
+</script>
+
+
+
+
