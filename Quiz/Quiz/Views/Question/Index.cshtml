@@ -32,13 +32,13 @@
                         @Html.DropDownListFor(x => x.TypeQuestionId, (List<SelectListItem>)ViewBag.LstTypeQuestion, "--Chọn loại câu hỏi---", new { @class = "form-select" })
                     </div>
                     <div class="col-sm">
-                        
-                            <div class="search-box ms-2">
-                                @Html.TextBox("SearchText", "", new { @class = "form-control search", @placeholder = "Search" })
-                                <i class="ri-search-line search-icon"></i>
-                            </div>
 
-                        
+                        <div class="search-box ms-2">
+                            @Html.TextBox("SearchText", "", new { @class = "form-control search", @placeholder = "Search" })
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+
+
                     </div>
                     <div class="col-sm">
                         <div class="d-flex justify-content-sm-end">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
 
-                <div class="table-responsive table-card mt-3 mb-1" id="lstQuestion"> 
+                <div class="table-responsive table-card mt-3 mb-1" id="lstQuestion">
                 </div>
             </div>
         </div>

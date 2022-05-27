@@ -5729,11 +5729,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\DA_Question\\Quiz\\DAO\\DAO.csproj",
+      "projectUniqueName": "D:\\DA_Quiz\\Quiz\\DAO\\DAO.csproj",
       "projectName": "DAO",
-      "projectPath": "D:\\DA_Question\\Quiz\\DAO\\DAO.csproj",
+      "projectPath": "D:\\DA_Quiz\\Quiz\\DAO\\DAO.csproj",
       "packagesPath": "C:\\Users\\Miichi\\.nuget\\packages\\",
-      "outputPath": "D:\\DA_Question\\Quiz\\DAO\\obj\\",
+      "outputPath": "D:\\DA_Quiz\\Quiz\\DAO\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

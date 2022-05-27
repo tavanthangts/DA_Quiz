@@ -14,10 +14,10 @@
             <tr>
                 <td>@item.NameTypeQuestion</td>
                 <td>
-                    @Html.ActionLink("Sửa", "Edit", new { id = item.TypeQuestionId }) |
-                    <button data-bs-toggle="modal" data-bs-target="#myModaldelete" onclick="Delete('@item.TypeQuestionId')">
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.TypeQuestionId }, new { @class = "btn btn-success" }) 
+                    <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#myModaldelete" onclick="Delete('@item.TypeQuestionId')">
                         Xóa
-                    </button>
+                    </a>
                 </td>
             </tr>
 

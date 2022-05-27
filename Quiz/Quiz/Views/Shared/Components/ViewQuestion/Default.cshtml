@@ -15,17 +15,16 @@
         {
             <tr>
                 <td>@item.NameQuestion</td>
-                <td>@Html.Raw(Helper.Nametypequestion(item.TypeQuestionId))</td>
+                <td>@item.NameTypeQuestion</td>
                 <td>@Html.Raw(Helper.level(item.Level))</td>
-                <td>@Html.Raw(Helper.Namesubject(item.SubjectId))</td>
+                <td>@item.NameSubject</td>
                 <td>
-                    @Html.ActionLink("Sửa", "Edit", new { id = item.QuestionId }) |
-                    <button data-bs-toggle="modal" data-bs-target="#myModaldelete" onclick="Delete('@item.QuestionId')">
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.QuestionId }, new { @class = "btn btn-success" }) 
+                    <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#myModaldelete" onclick="Delete('@item.QuestionId')">
                         Xóa
-                    </button>
+                    </a>
                 </td>
             </tr>
-
         }
     </tbody>
 </table>
@@ -64,6 +63,10 @@
         GetListQuestion(page);
     }
 </script>
+
+
+
+
 
 
 

@@ -11,5 +11,6 @@ namespace DAO.Models
     {
         public int TypeQuestionId { get; set; }
         public string NameTypeQuestion { get; set; }
+        public string CodeTypeQuestion { get; set; }
     }
 }

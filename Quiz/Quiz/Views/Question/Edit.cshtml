@@ -22,61 +22,278 @@
     </div>
 </div>
 <!-- end page title -->
-@using (Html.BeginForm("Create", "Question", FormMethod.Post))
+@using (Html.BeginForm("Create", "Question", FormMethod.Post, new { id = "myFormId" }))
 {
     @Html.HiddenFor(x => x.QuestionId)
+    @Html.HiddenFor(x => x.CodeTypeQuestion, new { id = "DCodeTypeQuestion" })
+    @Html.HiddenFor(model => model.ArrDelete, new { id = "arrDelete" })
     <div class="row">
         <div class="card card-body">
-            <form action="">
-                <div class="row mb-3">
-                    <div class="col-lg-2 ">
-                        <label for="NameQuestion" class="form-label">Tên câu hỏi</label>
-                    </div>
-                    <div class="col-lg-5">
-                        @Html.TextBoxFor(x => x.NameQuestion, new { @class = "form-control" })
-                    </div>
+            <div class="row mb-3">
+                <div class="col-lg-2 ">
+                    <label for="NameQuestion" class="form-label">Tên câu hỏi</label>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-lg-2 ">
-                        <label for="TypeQuestionId" class="form-label">Loại câu hỏi</label>
-                    </div>
-                    <div class="col-lg-5">
-                        @Html.DropDownListFor(x => x.TypeQuestionId, (List<SelectListItem>)ViewBag.LstTypeQuestion, new { @class = "form-control" })
-                    </div>
+                <div class="col-lg-5">
+                    @Html.TextBoxFor(x => x.NameQuestion, new { @class = "form-control" })
                 </div>
-                <div class="row mb-3">
-                    <div class="col-lg-2 ">
-                        <label for="SubjectId" class="form-label">Chủ đề</label>
-                    </div>
-                    <div class="col-lg-5">
-                        @Html.DropDownListFor(x => x.SubjectId, (List<SelectListItem>)ViewBag.LstSubject, new { @class = "form-control" })
-                    </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-2 ">
+                    <label for="TypeQuestionId" class="form-label">Loại câu hỏi</label>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-lg-2 ">
-                        <label for="Level" class="form-label">Cấp độ</label>
+                <div class="col-lg-5">
+                    @Html.DropDownListFor(x => x.CodeTypeQuestion, (List<SelectListItem>)ViewBag.LstTypeQuestion, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-2 ">
+                    <label for="SubjectId" class="form-label">Chủ đề</label>
+                </div>
+                <div class="col-lg-5">
+                    @Html.DropDownListFor(x => x.SubjectId, (List<SelectListItem>)ViewBag.LstSubject, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-2 ">
+                    <label for="Level" class="form-label">Cấp độ</label>
+                </div>
+                <div class="col-lg-5">
+                    @Html.DropDownListFor(x => x.Level, new SelectList(
+                    new List<Object>
+                    {
+                        new { value = 1 , text = "Dễ"  },
+                        new { value = 2 , text = "Trung bình" },
+                        new { value = 3 , text = "Khó" },
+                    },
+                    "value",
+                    "text"
+                    ), new { @class = "form-control" })
+                </div>
+            </div>
+            <div id="Answer">
+                @if (Model.ListAnswer.Count == 0)
+                {
+                    <div class="row mb-3" id="Answertext">
+                        <div class="col-lg-2">
+                            <label for="Answer" class="form-label">Câu trả lời</label>
+                        </div>
+                        <div class="col-lg-5">
+                            <textarea class="form-control" id="AnswertextContent" rows="3" value="" name="ListAnswer[0].Content"></textarea>
+                        </div>
                     </div>
-                    <div class="col-lg-5">
-                        @Html.DropDownListFor(x => x.Level, new SelectList(
-                        new List<Object>
+                }
+                else
+                {
+                    @for (int i = 0; i < Model.ListAnswer.Count; i++)
+                    {
+                        @Html.HiddenFor(x => x.ListAnswer[i].AnswerId)
+                        var check = "";
+                        if (Model.ListAnswer[i].IsCorrect)
                         {
-                            new { value = 1 , text = "Dễ"  },
-                            new { value = 2 , text = "Trung bình" },
-                            new { value = 3 , text = "Khó" },
-                        },
-                        "value",
-                        "text"
-                        ))
-                    </div>
+                            check = "checked";
+                        }
+                        <div class="row mb-3">
+                            <div class="col-lg-2">
+                                <label for="Answer" class="form-label">Câu trả lời</label>
+                            </div>
+                            @if (Model.CodeTypeQuestion == Constant.text)
+                            {
+                                <div class="col-lg-5">
+                                    @Html.TextAreaFor(x => x.ListAnswer[i].Content, new { @class = "form-control" })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-lg-3">
+                                    @Html.TextAreaFor(x => x.ListAnswer[i].Content, new { @class = "form-control" })
+                                </div>
+                            }
+
+                            @if (Model.CodeTypeQuestion == Constant.radio)
+                            {
+                                <div class="col-lg-2">
+                                    <label for="IsCorrect" class="form-check-label">Câu trả lời đúng</label>
+                                    <input @check data-val="true" id="ListAnswer_[@i]_IsCorrect" name="IsCorrect" type="radio" style="margin-right:20px">
+                                    <span id="deleteAnswer_@i" class="btn btn-success deleteAnser" onclick="DeleteAnswer(@i, @Model.ListAnswer[i].AnswerId)"> Xóa</span>
+                                </div>
+                            }
+                            else if (@Model.CodeTypeQuestion == Constant.checkbox)
+                            {
+                                <div class="col-lg-2">
+                                    <label for="IsCorrect" class="form-check-label">Câu trả lời đúng</label>
+                                    <input @check class="form-check-input" data-val="true" id="ListAnswercheckbox_[@i]_IsCorrect" name="ListAnswer[@i].IsCorrect" type="checkbox" value="true" style="margin-right: 20px">
+                                    <span id="deleteAnswer_@i" class="btn btn-success deleteAnser" onclick="DeleteAnswer(@i, @Model.ListAnswer[i].AnswerId)"> Xóa</span>
+                                </div>
+                            }
+
+                        </div>
+
+                    }
+                }
+
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-2">
+                    <input style="display:none" type="button" value="Thêm câu trả lời" class="add" id="add" />
                 </div>
-                <div class="row mb-3">
-                    <div class="col-lg-7">
-                        <button type="submit" style="float : right" class="btn btn-primary">Lưu</button>
-                    </div>
+                <div class="col-lg-5">
+                    <button type="submit" style="float : right" class="btn btn-primary">Lưu</button>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 }
+<script type="text/javascript">
+    document.forms['myFormId'].addEventListener('submit', (event) => {
+        $('#arrDelete').val(arrAnswer);
+        $('#DCodeTypeQuestion').val($("#CodeTypeQuestion").val());
+        var CodeTypeQuestion = $("#CodeTypeQuestion").val();
+        switch (CodeTypeQuestion) {
+            case "@((string)Constant.radio)": {
+                ReGenerateNameRadio();
+                break;
+            }
+            case "@((string)Constant.checkbox)": {
+                ReGenerateNamecheckbox();
+            }
+            default: {
+                break;
+            }
+        }
+        });
+    function ReGenerateNameRadio() {
+        $("textarea[name*='Content']").each(function (index) {
+            $(this).attr('name', 'ListAnswer[' + index + '].Content');
+        });
+        $("input:radio").each(function (index) {
+            $(this).attr('id', 'ListAnswer_[' + index + ']_IsCorrect');
+            $(this).attr('name', 'IsCorrect');
+            if ($(this).is(":checked")) {
+                $(this).attr('value', index);
+            }
+        });
+    }
+    function ReGenerateNamecheckbox() {
+        $("textarea[name*='Content']").each(function (index) {
+            $(this).attr('name', 'ListAnswer[' + index + '].Content');
+        });
+        $("input[name*='IsCorrect']").each(function (index) {
+            $(this).attr('name', 'ListAnswer[' + index + '].IsCorrect');
+        });
+    }
+
+
+    if (@Model.ListAnswer.Count == 0) {
+        var index = 0;
+    }
+    else {
+        var index = @Model.ListAnswer.Count;
+        $("#CodeTypeQuestion").prop("disabled", true);
+        $("#add").css("display", "block");
+    }
+    $('#add').on('click', function () {
+        var CodeTypeQuestion = $("#CodeTypeQuestion").val();
+        let html = "";
+        html += "<div id= \"Answer" + index +"\" class=\"row mb-3\">";
+        html += "<div class=\"col-lg-2\">";
+        html += "<label for=\"Answer\" class=\"form-label\">Câu trả lời</label>";
+        html += "</div>";
+        switch (CodeTypeQuestion) {
+            case "@((string)Constant.text)":
+                {
+                    html += "<div class=\"col-lg-5\">";
+                    html += "<textarea class=\"form-control\" id=\"AnswertextContent\" rows=\"3\" name=\"ListAnswer[" + index + "].Content\"></textarea>";
+                    html += "</div>";
+                    break;
+                }
+            case "@((string)Constant.radio)": {
+                html += "<div class=\"col-lg-3\">";
+                html += "<textarea class=\"form-control\" id=\"ListAnswerradio_" + index + "_Content\" rows=\"3\" name=\"ListAnswer[" + index + "].Content\"></textarea>";
+                html += "</div>";
+                html += "<div class=\"col-lg-2\">";
+                html += "<label for=\"IsCorrect\" class=\"form-check-label\">Câu trả lời đúng</label>&nbsp&nbsp";
+                html += "<input id=\"ListAnswer_[" + index +"]_IsCorrect\" name=\"IsCorrect\" type=\"radio\">";
+                html += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span id=\"deleteAnswer_" + index + "\" class=\"btn btn-success deleteAnser\" onclick=\"DeleteAnswer(" + index + ",0)\">Xóa</span>";
+                break;
+            }
+            case "@((string)Constant.checkbox)": {
+                html += "<div class=\"col-lg-3\">";
+                html += "<textarea class=\"form-control\" id=\"ListAnswercheckbox_" + index + "_Content\" rows=\"3\" name=\"ListAnswer[" + index + "].Content\"></textarea>";
+                html += "</div>";
+                html += "<div class=\"col-lg-2\">";
+                html += "<label for=\"IsCorrect\" class=\"form-check-label\">Câu trả lời đúng</label>&nbsp&nbsp";
+                html += "<input class=\"form-check-input checkquestion\" type=\"checkbox\" name=\"ListAnswer[" + index + "].IsCorrect\" id=\"ListAnswercheckbox_["+ index + "]_IsCorrect\" value=\"true\">";
+                html += "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span id=\"deleteAnswer_" + index + "\" class=\"btn btn-success deleteAnser\" onclick=\"DeleteAnswer(" + index + ",0)\">Xóa</span>";
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+        html += "</div>";
+        $('#Answer').append(html);
+        index++;
+    })
+
+    $("#CodeTypeQuestion").change(function () {
+        var CodeTypeQuestion = $(this).val();
+        switch (CodeTypeQuestion) {
+            case "@((string)Constant.text)":
+                {
+                   $("#add").css("display", "none");
+                      for (let i = 0; i < index; i++)
+                      {
+                          DeleteAnswer(i,0);
+                      }
+                      $('#add').click();
+                      break;
+                }
+            case "@((string)Constant.radio)":
+                {
+                   $("#Answertext").remove();
+                      for (let i = 0; i < index; i++)
+                      {
+                          DeleteAnswer(i,0);
+                      }
+                      index = 0;
+                      $('#add').click();
+                      $("#add").css("display", "block");
+                      break;
+                }
+            case "@((string)Constant.checkbox)":
+                {
+                   $("#Answertext").remove();
+                      for (let i = 0; i < index; i++)
+                      {
+                          DeleteAnswer(i,0);
+                      }
+                      index = 0;
+                      $('#add').click();
+                      $("#add").css("display", "block");
+                      break;
+            }
+            default: {
+                break;
+            }
+        }
+    })
+    var arrAnswer = [];
+    function DeleteAnswer(index, idAnswer)
+    {
+        if (idAnswer != 0) {
+            arrAnswer.push(idAnswer);
+            $("#deleteAnswer_" + index + "").removeClass("btn-success");
+            $("#deleteAnswer_" + index + "").addClass('btn-light');
+            $("#deleteAnswer_" + index + "").prop("disabled", true);
+
+        }
+        else
+        {
+            $("#Answer" + index + '').remove();
+        }
+    }
+</script>
 
 

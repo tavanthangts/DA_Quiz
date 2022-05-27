@@ -14,7 +14,10 @@ namespace Quiz.Helper
             string result = "";
             if (numberPage > 0)
             {
-                result += "<a class=\"page-item pagination-prev disabled\" onclick=\"NextPage(" + (currentPage - 1) + ")\" href=\"javascript: void(0);\">Previous</a>";
+                if (currentPage != 1)
+                {
+                    result += "<a class=\"page-item pagination-prev disabled\" onclick=\"NextPage(" + (currentPage - 1) + ")\" href=\"javascript: void(0);\">Previous</a>";
+                }
                 result += "<ul class=\"pagination listjs-pagination mb-0\">";
                 for (int i = 1; i <= numberPage; i++)
                 {
@@ -30,32 +33,6 @@ namespace Quiz.Helper
                 result += "</ul>";
                 if (currentPage != numberPage)
                     result += "<a class=\"page-item pagination-next\" onclick=\"NextPage(" + (currentPage + 1) + ")\" href=\"javascript:void(0);\">Next</a>";
-            }
-            return result;
-        }
-        public static string Namesubject(int id)
-        {
-            string result = "";
-            if (id != 0)
-            {
-                using (var _quizContext = new QuizContext())
-                {
-                    var subject = _quizContext.Subject.Where(x => x.SubjectId == id).FirstOrDefault();
-                    result = subject.NameSubject;
-                }
-            }
-            return result;
-        }
-        public static string Nametypequestion(int id)
-        {
-            string result = "";
-            if (id != 0)
-            {
-                using (var _quizContext = new QuizContext())
-                {
-                    var typequestion = _quizContext.TypeQuestion.Where(x => x.TypeQuestionId == id).FirstOrDefault();
-                    result = typequestion.NameTypeQuestion;
-                }
             }
             return result;
         }

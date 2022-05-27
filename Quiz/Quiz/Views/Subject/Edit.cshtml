@@ -23,16 +23,17 @@
 <!-- end page title -->
 @using (Html.BeginForm("Create", "Subject", FormMethod.Post))
 {
-    @Html.HiddenFor(x=>x.SubjectId)
+    @Html.HiddenFor(x => x.SubjectId)
+    @Html.HiddenFor(x => x.ParentSubjectId, new { id = "SParentSubjectId" })
     <div class="row">
         <div class="card card-body">
-            <form action="">
-
-                <div class="row mb-3">
-                    <div class="col-lg-2">
-                        <label for="ThemeType" class="form-label">Loại chủ đề</label>
-                    </div>
-                    <div class="row col-lg-5 ">
+            <div class="row mb-3">
+                <div class="col-lg-2">
+                    <label for="ThemeType" class="form-label">Loại chủ đề</label>
+                </div>
+                <div class="row col-lg-5 ">
+                    @if (Model.ParentSubjectId == null)
+                    {
                         <div class="col-sm-3">
                             <input type="radio" id="OriginalTheme" name="ChooseTheme" value="@((int)ChooseTheme.OriginalTheme)" checked>
                             <label for="OriginalTheme">Chủ đề gốc</label>
@@ -41,45 +42,96 @@
                             <input type="radio" id="Childtheme" name="ChooseTheme" value="@((int)ChooseTheme.Childtheme)">
                             <label for="Childtheme">Chủ đề con</label>
                         </div>
-                    </div>
-                </div>
-                <div class="parentsubject" style="display:none">
-                    <div class="row mb-3">
-                        <div class="col-lg-2">
-                            <label for="ParentSubjectID" class="form-label">Nhập ID chủ đề con</label>
+                    }
+                    else
+                    {
+                        <div class="col-sm-3">
+                            <input type="radio" id="OriginalTheme" name="ChooseTheme" value="@((int)ChooseTheme.OriginalTheme)">
+                            <label for="OriginalTheme">Chủ đề gốc</label>
                         </div>
-                        <div class="col-lg-5">
-                            @Html.DropDownListFor(x=>x.ParentSubjectId, (List<SelectListItem>)ViewBag.LstSubject, new { @class = "form-control" })
+                        <div class="col-sm-3">
+                            <input type="radio" id="Childtheme" name="ChooseTheme" value="@((int)ChooseTheme.Childtheme)" checked>
+                            <label for="Childtheme">Chủ đề con</label>
                         </div>
-                    </div>
+                    }
                 </div>
+            </div>
+            <div class="parentsubject" style="display:none">
                 <div class="row mb-3">
-                    <div class="col-lg-2 ">
-                        <label for="NameSubject" class="form-label">Tên chủ đề</label>
+                    <div class="col-lg-2">
+                        <label for="ParentSubjectID" class="form-label">Nhập ID chủ đề con</label>
                     </div>
                     <div class="col-lg-5">
-                        @Html.TextBoxFor(x => x.NameSubject, new { @class = "form-control" })
+                        <input type="text" id="ParentSubjectId" placeholder="Chọn chủ đề" />
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-lg-7">
-                        <button type="submit" style="float : right" class="btn btn-primary">Lưu</button>
-                    </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-2 ">
+                    <label for="NameSubject" class="form-label">Tên chủ đề</label>
                 </div>
-            </form>
+                <div class="col-lg-5">
+                    @Html.TextBoxFor(x => x.NameSubject, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-lg-7">
+                    <button type="submit" onclick="Save()" style="float : right" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+
         </div>
     </div>
 }
-
+<script src="~/assets/libs/lib/Drop-Down-Combo-Tree/comboTreePlugin.js"></script>
+<link href="~/assets/libs/lib/Drop-Down-Combo-Tree/style.css" rel="stylesheet" />
 <script lang="text/javascript">
+    var instance = '';
     $(document).ready(function () {
+        var select = ['1'];
+        var id = 0;
+        checkradio();
         $("[name='ChooseTheme']").change(function () {
-            if (this.value == @((int)ChooseTheme.Childtheme)) {
-                $(".parentsubject").css("display", "block");
-            }
-            else {
-                $(".parentsubject").css("display", "none");
-            }
+            checkradio();
+
+        });
+        if (@Model.SubjectId !=0)
+        {
+            select = ['@Model.ParentSubjectId'];
+            id = @Model.SubjectId;
+        }
+        var mydata = $.ajax({
+            type: "Get",
+            async: false,
+            url: window.location.origin + '/Subject/DropDownSubject',
+            data: {
+                id: id
+            },
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+                return data;
+            },
+        }).responseJSON;
+        instance = $('#ParentSubjectId').comboTree({
+                    source: mydata,
+                    isMultiple: false,
+                    selected: select
+        });
+        $("#ParentSubjectId").on("change", function () {
+            $('#SParentSubjectId').val(instance.getSelectedIds());
         });
     });
+    function checkradio() {
+        if ($("input[name='ChooseTheme']:checked").val() == @((int)ChooseTheme.Childtheme)) {
+            $(".parentsubject").css("display", "block");
+        }
+        else {
+            $(".parentsubject").css("display", "none");
+        }
+    }
+    function Save() {
+        var chooseTheme = $('input[name=ChooseTheme]:checked').val();
+    }
+ 
 </script>

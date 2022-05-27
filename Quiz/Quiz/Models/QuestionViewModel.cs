@@ -7,11 +7,21 @@ namespace Quiz.Models
 {
     public class QuestionViewModel
     {
-        public int ?QuestionId { get; set; }
+        public QuestionViewModel()
+        {
+            ListAnswer = new List<AnswerViewModel>();
+        }
+
+        public int? QuestionId { get; set; }
         public string NameQuestion { get; set; }
         public int TypeQuestionId { get; set; }
+        public string CodeTypeQuestion { get; set; }
         public int Level { get; set; }
         public int SubjectId { get; set; }
+        public string NameTypeQuestion { get; set; }
+        public string NameSubject { get; set; }
+        public List<AnswerViewModel> ListAnswer { get; set; }
+        public string ArrDelete { get; set; }
     }
     public class PageQuestion
     {
